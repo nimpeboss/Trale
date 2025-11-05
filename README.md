@@ -2,20 +2,68 @@
 
 A fun and addictive Pokemon guessing game built with React and Vite. Test your Pokemon knowledge by guessing which Pokemon has higher stats!
 
-## 📋 Project Description
+## 📋 About
 
-An interactive web game where players compare Pokemon statistics in a "Higher or Lower" format. Players are shown two Pokemon cards - one with a revealed stat and one hidden. The goal is to guess whether the hidden Pokemon's stat is higher or lower than the revealed one. Features include animated number counters, smooth card transitions, persistent high scores, and support for all Generation 1-9 Pokemon (1025 total).
+An interactive web game where players compare Pokemon statistics in a "Higher or Lower" format. Players are shown two Pokemon cards - one with a revealed stat and one hidden. The goal is to guess whether the hidden Pokemon's stat is higher or lower than the revealed one.
 
-## 🎯 Game Features
+## 🎯 Features
 
 - **1025 Pokemon** - All Pokemon from Generations 1-9
 - **7 Random Stats** - Compare Base Stat Total, Height, Weight, HP, Attack, Defense, or Speed
 - **Animated Counters** - Smooth number animations with easing effects
-- **High Score System** - Track your best streak with localStorage persistence
-- **Preloading Optimization** - Smart API request caching for seamless gameplay
-- **Rich Animations** - Card sliding, glowing effects, shake animations, and more
-- **Responsive Design** - Beautiful gradient backgrounds and polished UI
-- **No Duplicates** - Intelligent logic prevents identical stat values
+- **High Score System** - Track your best streak across sessions
+- **Beautiful Design** - Gradient backgrounds, card animations, and polished UI
+- **Smart Gameplay** - No duplicate stats, instant transitions
+
+## 🎮 How to Play
+
+1. Two Pokemon cards will appear - one with a visible stat, one with a hidden "???" stat
+2. Look at the left Pokemon's stat value
+3. Guess if the right Pokemon's stat is **HIGHER** or **LOWER**
+4. The right card reveals its stat and shows if you're correct
+5. If correct, your score increases and a new Pokemon appears on the right
+6. If wrong, game over! Try to beat your high score
+7. Stats are randomized each round (could be HP, Attack, Height, etc.)
+8. Use the "Reset High Score" button to start fresh
+
+## 🚀 Quick Start
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/nimpeboss/Trale.git
+   cd Trale
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start the game:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser to `http://localhost:5173`
+
+## 🌐 Data Source
+
+This game uses the [PokeAPI](https://pokeapi.co/) - a free RESTful Pokemon API providing data for all Pokemon from Generations 1-9.
+
+## 📚 Technical Documentation
+
+For detailed technical information about the implementation, architecture, and optimizations, see [TECHNICAL.md](./TECHNICAL.md).
+
+## 📝 License
+
+This project is created for educational purposes as part of a client-side development course.
+
+---
+
+**Course**: Client-Side Development | **Year**: 2025
 
 ## 🚀 Technologies Used
 
