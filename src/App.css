@@ -15,12 +15,14 @@ body {
 
 #root {
   width: 100%;
+  contain: layout style paint;
 }
 
 .game-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
+  contain: layout style;
 }
 
 .score {
@@ -51,6 +53,8 @@ body {
   justify-content: space-between;
   transition: all 0.3s ease;
   opacity: 0;
+  contain: layout style paint;
+  will-change: transform, opacity;
 }
 
 .pokemon-card.left,
@@ -102,6 +106,7 @@ body {
   margin: 0 auto;
   filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
   transition: transform 0.3s ease;
+  will-change: transform;
 }
 
 .pokemon-image:hover {

@@ -53,14 +53,22 @@ function App() {
   const getRandomPokemonId = () => Math.floor(Math.random() * 898) + 1
 
   const fetchPokemon = async (id) => {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
+      cache: 'force-cache',
+    })
     const data = await response.json()
     const totalStats = data.stats.reduce((sum, stat) => sum + stat.base_stat, 0)
+    
+    const sprite = data.sprites.other['official-artwork'].front_default || data.sprites.front_default
+    
+    // Preload image
+    const img = new Image()
+    img.src = sprite
     
     return {
       id: data.id,
       name: data.name,
-      sprite: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
+      sprite: sprite,
       totalStats: totalStats,
       height: data.height,
       weight: data.weight,
@@ -166,7 +174,14 @@ function App() {
       
       <div className="pokemon-cards">
         <div className={`pokemon-card left ${animateCards ? 'slide-in-left' : ''} ${showResult && isCorrect === false ? 'shake' : ''}`}>
-          <img src={leftPokemon.sprite} alt={leftPokemon.name} className="pokemon-image" />
+          <img 
+            src={leftPokemon.sprite} 
+            alt={leftPokemon.name} 
+            width="200"
+            height="200"
+            loading="eager"
+            className="pokemon-image" 
+          />
           <h2 className="pokemon-name">{leftPokemon.name}</h2>
           <div className="stat-display">
             <p className="stat-label">{currentStat.label}</p>
@@ -188,23 +203,32 @@ function App() {
               onClick={() => handleGuess('higher')} 
               className="guess-button higher"
               disabled={showResult}
+              aria-label="Guess higher stat"
             >
-              <span className="button-icon">↑</span>
+              <span className="button-icon" aria-hidden="true">↑</span>
               HIGHER
             </button>
             <button 
               onClick={() => handleGuess('lower')} 
               className="guess-button lower"
               disabled={showResult}
+              aria-label="Guess lower stat"
             >
-              <span className="button-icon">↓</span>
+              <span className="button-icon" aria-hidden="true">↓</span>
               LOWER
             </button>
           </div>
         </div>
 
         <div className={`pokemon-card right ${animateCards ? 'slide-in-right' : ''} ${showResult && isCorrect ? 'glow-success' : ''} ${showResult && !isCorrect ? 'glow-fail' : ''}`}>
-          <img src={rightPokemon.sprite} alt={rightPokemon.name} className="pokemon-image" />
+          <img 
+            src={rightPokemon.sprite} 
+            alt={rightPokemon.name} 
+            width="200"
+            height="200"
+            loading="lazy"
+            className="pokemon-image" 
+          />
           <h2 className="pokemon-name">{rightPokemon.name}</h2>
           <div className="stat-display">
             <p className="stat-label">{currentStat.label}</p>
