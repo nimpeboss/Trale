@@ -34,7 +34,6 @@ AnimatedNumber.propTypes = {
 }
 
 function App() {
-function App() {
   const [leftPokemon, setLeftPokemon] = useState(null)
   const [rightPokemon, setRightPokemon] = useState(null)
   const [score, setScore] = useState(0)
@@ -307,6 +306,7 @@ function App() {
               aria-label="Guess higher stat"
             >
               <span className="button-icon" aria-hidden="true">↑</span>
+              {' '}
               HIGHER
             </button>
             <button 
@@ -316,6 +316,7 @@ function App() {
               aria-label="Guess lower stat"
             >
               <span className="button-icon" aria-hidden="true">↓</span>
+              {' '}
               LOWER
             </button>
           </div>
@@ -346,5 +347,5 @@ function App() {
     </div>
   )
 }
-}
+
 export default App
