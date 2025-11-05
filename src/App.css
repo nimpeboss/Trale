@@ -25,13 +25,45 @@ body {
   contain: layout style;
 }
 
+.score-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
 .score {
   text-align: center;
   font-size: 2.5rem;
   font-weight: bold;
   color: white;
-  margin-bottom: 30px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.high-score {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.high-score-display {
+  font-size: 1.8rem;
+  color: #ffd700;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.new-high-score {
+  font-size: 2rem;
+  color: #ffd700;
+  margin: 20px 0;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .pokemon-cards {
@@ -346,6 +378,26 @@ body {
 .restart-button:hover {
   transform: scale(1.1);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.reset-high-score-button {
+  margin-top: 20px;
+  padding: 12px 30px;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #757f9a, #d7dde8);
+  color: #333;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.reset-high-score-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(135deg, #d7dde8, #757f9a);
 }
 
 /* Animations */
