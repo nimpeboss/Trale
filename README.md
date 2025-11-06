@@ -1,4 +1,4 @@
-# Trale - Pokemon Higher or Lower Game 🎮# Trale - Pokemon Higher or Lower Game 🎮 A fun and addictive Pokemon guessing game built with React and Vite. Test your Pokemon knowledge by guessing which Pokemon has higher stats ! ## 📋 About An interactive web game where players compare Pokemon statistics in a "Higher or Lower"format. Players are shown two Pokemon cards - one with a revealed stat and one hidden. The goal is to guess whether the hidden Pokemon's stat is higher or lower than the revealed one.
+# Trale - Pokemon Higher or Lower Game
 
 A fun and addictive Pokemon guessing game built with React and Vite. Test your Pokemon knowledge by guessing which Pokemon has higher stats!## 🎯 Features - **1025 Pokemon** - All Pokemon from Generations 1-9 - **7 Random Stats** - Compare Base Stat Total,
 
