@@ -51,6 +51,19 @@ function App() {
   const [animateCards, setAnimateCards] = useState(false);
   const [preloadedPokemon, setPreloadedPokemon] = useState(null);
   const [streakMilestone, setStreakMilestone] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    localStorage.setItem("pokemonDarkMode", newDarkMode.toString());
+
+    if (newDarkMode) {
+      document.body.classList.add("dark-mode")
+    } else {
+      document.body.classList.remove("dark-mode")
+    }
+  };
 
   // Load high score from localStorage on mount
   useEffect(() => {
@@ -311,6 +324,7 @@ function App() {
 
   const resetHighScore = () => {
     localStorage.removeItem("pokemonBestStreak");
+    localStorage.removeItem("pokemonHighScore");
     setHighScore(0);
     setBestStreak(0);
     // Rick Roll easter egg
@@ -359,7 +373,13 @@ function App() {
 
   return (
     <div className="game-container">
-      {" "}
+      <button
+        onClick={toggleDarkMode}
+        className="dark-mode-toggle"
+        aria-label="toggle dark mode"
+      >
+        {darkMode ? "☀️" : "🌙"}
+      </button>{" "}
       <div className="score-container slide-down">
         {" "}
         <div className="score">Score: {score}</div>{" "}
