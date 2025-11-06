@@ -59,9 +59,9 @@ function App() {
     localStorage.setItem("pokemonDarkMode", newDarkMode.toString());
 
     if (newDarkMode) {
-      document.body.classList.add("dark-mode")
+      document.body.classList.add("dark-mode");
     } else {
-      document.body.classList.remove("dark-mode")
+      document.body.classList.remove("dark-mode");
     }
   };
 
@@ -159,6 +159,7 @@ function App() {
       id: data.id,
       name: data.name,
       sprite: sprite,
+      types: data.types.map((t) => t.type.name),
       totalStats: totalStats,
       height: data.height,
       weight: data.weight,
@@ -414,6 +415,13 @@ function App() {
             className="pokemon-image"
           />{" "}
           <h2 className="pokemon-name"> {leftPokemon.name}</h2>{" "}
+          <div className="type-badges">
+            {leftPokemon.types.map((type) => (
+              <span key={type} className={`type-badge type-${type}`}>
+                {type}
+              </span>
+            ))}
+          </div>
           <div className="stat-display">
             {" "}
             <p className="stat-label"> {currentStat.label}</p>{" "}
@@ -477,6 +485,13 @@ function App() {
             className="pokemon-image"
           />{" "}
           <h2 className="pokemon-name"> {rightPokemon.name}</h2>{" "}
+          <div className="type-badges">
+            {rightPokemon.types.map((type) => (
+              <span key={type} className={`type-badge type-${type}`}>
+                {type}
+              </span>
+            ))}
+          </div>
           <div className="stat-display">
             {" "}
             <p className="stat-label"> {currentStat.label}</p>{" "}

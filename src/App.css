@@ -196,6 +196,100 @@ body {
   margin: 15px 0;
 }
 
+/* Type Badges */
+.type-badges {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+
+.type-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Pokémon Type Colors */
+.type-normal {
+  background: linear-gradient(135deg, #A8A878 0%, #9C9C7C 100%);
+}
+
+.type-fire {
+  background: linear-gradient(135deg, #F08030 0%, #DD6610 100%);
+}
+
+.type-water {
+  background: linear-gradient(135deg, #6890F0 0%, #386CEB 100%);
+}
+
+.type-electric {
+  background: linear-gradient(135deg, #F8D030 0%, #F0C108 100%);
+}
+
+.type-grass {
+  background: linear-gradient(135deg, #78C850 0%, #5CA935 100%);
+}
+
+.type-ice {
+  background: linear-gradient(135deg, #98D8D8 0%, #69C6C6 100%);
+}
+
+.type-fighting {
+  background: linear-gradient(135deg, #C03028 0%, #9D2721 100%);
+}
+
+.type-poison {
+  background: linear-gradient(135deg, #A040A0 0%, #803380 100%);
+}
+
+.type-ground {
+  background: linear-gradient(135deg, #E0C068 0%, #D4A82F 100%);
+}
+
+.type-flying {
+  background: linear-gradient(135deg, #A890F0 0%, #9180C4 100%);
+}
+
+.type-psychic {
+  background: linear-gradient(135deg, #F85888 0%, #F61C5D 100%);
+}
+
+.type-bug {
+  background: linear-gradient(135deg, #A8B820 0%, #8D9A1B 100%);
+}
+
+.type-rock {
+  background: linear-gradient(135deg, #B8A038 0%, #9B8328 100%);
+}
+
+.type-ghost {
+  background: linear-gradient(135deg, #705898 0%, #554374 100%);
+}
+
+.type-dragon {
+  background: linear-gradient(135deg, #7038F8 0%, #4C08EF 100%);
+}
+
+.type-dark {
+  background: linear-gradient(135deg, #705848 0%, #513F34 100%);
+}
+
+.type-steel {
+  background: linear-gradient(135deg, #B8B8D0 0%, #9797BA 100%);
+}
+
+.type-fairy {
+  background: linear-gradient(135deg, #EE99AC 0%, #EC6D9A 100%);
+}
+
 .stat-display {
   margin-top: 20px;
 }
@@ -679,6 +773,10 @@ body.dark-mode {
 .dark-mode .pokemon-name {
   color: #e0e0e0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.dark-mode .type-badge {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .dark-mode .stat-label {
