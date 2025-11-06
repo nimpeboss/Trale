@@ -1,4 +1,8 @@
-# Trale - Pokemon Higher or Lower Game
+# Trale - Pokemon Higher or Lower Game 🎮
+
+![Deploy Status](https://github.com/nimpeboss/Trale/actions/workflows/deploy.yml/badge.svg)
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![License](https://img.shields.io/badge/license-Educational-blue)
 
 A fun and addictive Pokemon guessing game built with React and Vite. Test your Pokemon knowledge by guessing which Pokemon has higher stats!## 🎯 Features - **1025 Pokemon** - All Pokemon from Generations 1-9 - **7 Random Stats** - Compare Base Stat Total,
 
@@ -86,6 +90,32 @@ This game uses the [PokeAPI](https://pokeapi.co/) - a free RESTful Pokemon API p
 ## 📚 Technical Documentation
 
 For detailed technical information about the implementation, architecture, and optimizations, see [TECHNICAL.md](./TECHNICAL.md).
+
+For GitHub Pages deployment and CI/CD setup, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+## 🌐 Live Demo
+
+The game is automatically deployed to GitHub Pages:
+
+👉 **[Play Now](https://nimpeboss.github.io/Trale/)**
+
+## 🧪 Testing
+
+This project includes automated tests with Vitest:
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests with UI
+npm run test:ui
+```
 
 ## 📝 License
 
