@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useState, useEffect } from 'react';
+=======
+import { useState, useEffect, useMemo } from 'react';
+>>>>>>> parent of b89fa12 (Revert "backup")
 import './App.css';
 import PokemonCard from './components/PokemonCard';
 import GameControls from './components/GameControls';
@@ -41,6 +45,12 @@ function App() {
   setScreenReaderAnnouncement]=useState("");
   const [animateCards,
   setAnimateCards]=useState(false);
+<<<<<<< HEAD
+=======
+  
+  // Initialize offline storage
+  const offlineStorage = useMemo(() => new OfflineStorage(), []);
+>>>>>>> parent of b89fa12 (Revert "backup")
 
   const toggleDarkMode=()=> {
     const newDarkMode= !darkMode;
