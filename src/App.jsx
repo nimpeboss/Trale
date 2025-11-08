@@ -3,6 +3,13 @@ import './App.css';
 import PokemonCard from './components/PokemonCard';
 import GameControls from './components/GameControls';
 import ScoreDisplay from './components/ScoreDisplay';
+import ErrorBoundary from './components/ErrorBoundary';
+import { NetworkError, GameStateError } from './components/ErrorFallbacks';
+import { 
+  PokemonCardSkeleton, 
+  ScoreDisplaySkeleton, 
+  GameControlsSkeleton 
+} from './components/LoadingSkeletons';
 
 function App() {
   const [leftPokemon,
@@ -82,7 +89,7 @@ function App() {
 
       // Mobile detection
       const checkMobile=()=> {
-        setIsMobile(window.innerWidth <=768 || 'ontouchstart'in window);
+        setIsMobile(globalThis.innerWidth <= 768 || 'ontouchstart' in globalThis);
       }
 
       ;
@@ -90,7 +97,7 @@ function App() {
       checkMobile();
       window.addEventListener('resize', checkMobile);
 
-      return ()=> window.removeEventListener('resize', checkMobile);
+      return () => globalThis.removeEventListener('resize', checkMobile);
     }
 
     , []);
@@ -106,7 +113,7 @@ function App() {
     , [score, highScore]);
 
   // Update best streak when streak changes
-  useEffect(()=> {
+  useEffect(() => {
       if (streak > bestStreak) {
         setBestStreak(streak);
         localStorage.setItem("pokemonBestStreak", streak.toString());
@@ -117,10 +124,7 @@ function App() {
         setStreakMilestone(streak);
         setTimeout(()=> setStreakMilestone(null), 3000);
       }
-    }
-
-    , [streak, bestStreak]);
-  // Removed streakMilestone from dependencies to prevent loop
+  }, [streak, bestStreak]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stats=[ {
     key: "totalStats",
@@ -479,23 +483,40 @@ const resetHighScore=()=> {
 
 ;
 
-useEffect(()=> {
+  useEffect(() => {
     loadNewPokemon();
-     
-  }
-
-  , []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 if (loading) {
-  return (<div className="loading"> {
-      " "
-    }
+  return (
+    <main className="game-container" aria-label="Loading Pokemon Higher or Lower Game">
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        Loading new Pokemon battle...
+      </div>
+      
+      <ErrorBoundary fallback={<GameStateError onRetry={() => globalThis.location.reload()} />}>
+        <ScoreDisplaySkeleton />
+      </ErrorBoundary>
 
-    <div className="pokeball-loader"></div> <p>Loading Pokémon...</p> {
-      " "
-    }
+      <div className="pokemon-cards">
+        <ErrorBoundary fallback={<NetworkError onRetry={loadNewPokemon} />}>
+          <PokemonCardSkeleton position="left" className="skeleton-fade-in" />
+        </ErrorBoundary>
 
-    </div>);
+        <div className="vs-section">
+          <div className="vs-text pulse-slow">VS</div>
+        </div>
+
+        <ErrorBoundary fallback={<NetworkError onRetry={loadNewPokemon} />}>
+          <PokemonCardSkeleton position="right" className="skeleton-fade-in" />
+        </ErrorBoundary>
+      </div>
+
+      <ErrorBoundary fallback={<GameStateError onRetry={loadNewPokemon} />}>
+        <GameControlsSkeleton className="skeleton-fade-in" />
+      </ErrorBoundary>
+    </main>
+  );
 }
 
 if (gameOver) {
@@ -626,23 +647,27 @@ return (<main className="game-container"
     isMobile && !showResult && leftPokemon && rightPokemon && (<div className="mobile-instructions"aria-hidden="true"> <span>Swipe ↑ Higher | Swipe ↓ Lower</span> </div>)
   }
 
-  <ScoreDisplay 
-    score={score}
-    highScore={highScore}
-    streak={streak}
-    bestStreak={bestStreak}
-    streakMilestone={streakMilestone}
-  />
+  <ErrorBoundary fallback={<GameStateError onRetry={() => globalThis.location.reload()} />}>
+    <ScoreDisplay 
+      score={score}
+      highScore={highScore}
+      streak={streak}
+      bestStreak={bestStreak}
+      streakMilestone={streakMilestone}
+    />
+  </ErrorBoundary>
 
   <div className="pokemon-cards">
-    <PokemonCard 
-      pokemon={leftPokemon}
-      currentStat={currentStat}
-      position="left"
-      animateCards={animateCards}
-      showResult={showResult}
-      isCorrect={isCorrect}
-    />
+    <ErrorBoundary fallback={<NetworkError onRetry={loadNewPokemon} />}>
+      <PokemonCard 
+        pokemon={leftPokemon}
+        currentStat={currentStat}
+        position="left"
+        animateCards={animateCards}
+        showResult={showResult}
+        isCorrect={isCorrect}
+      />
+    </ErrorBoundary>
 
   <div className="vs-section"> {
     " "
@@ -672,29 +697,33 @@ return (<main className="game-container"
       </div>)
   }
 
-  <GameControls 
-    onGuess={handleGuess}
-    onToggleDarkMode={toggleDarkMode}
-    showResult={showResult}
-    isMobile={isMobile}
-    darkMode={darkMode}
-    rightPokemon={rightPokemon}
-    leftPokemon={leftPokemon}
-    currentStat={currentStat}
-  />
+  <ErrorBoundary fallback={<GameStateError onRetry={loadNewPokemon} />}>
+    <GameControls 
+      onGuess={handleGuess}
+      onToggleDarkMode={toggleDarkMode}
+      showResult={showResult}
+      isMobile={isMobile}
+      darkMode={darkMode}
+      rightPokemon={rightPokemon}
+      leftPokemon={leftPokemon}
+      currentStat={currentStat}
+    />
+  </ErrorBoundary>
 
       </div> {
         " "
       }
 
-    <PokemonCard 
-      pokemon={rightPokemon}
-      currentStat={currentStat}
-      position="right"
-      animateCards={animateCards}
-      showResult={showResult}
-      isCorrect={isCorrect}
-    />
+    <ErrorBoundary fallback={<NetworkError onRetry={loadNewPokemon} />}>
+      <PokemonCard 
+        pokemon={rightPokemon}
+        currentStat={currentStat}
+        position="right"
+        animateCards={animateCards}
+        showResult={showResult}
+        isCorrect={isCorrect}
+      />
+    </ErrorBoundary>
   </div>
 
   </main>);

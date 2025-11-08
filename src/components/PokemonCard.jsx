@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
 import AnimatedNumber from './AnimatedNumber';
 import TypeBadges from './TypeBadges';
+import { SkeletonImage } from './LoadingSkeletons';
 
 function PokemonCard({ 
   pokemon, 
@@ -9,8 +11,15 @@ function PokemonCard({
   animateCards = false, 
   showResult = false, 
   isCorrect = null,
-  className = '' 
+  className = ''
 }) {
+  const [imageLoadState, setImageLoadState] = useState('loading');
+  
+  // Reset loading state when pokemon changes
+  useEffect(() => {
+    setImageLoadState('loading');
+  }, [pokemon.sprite, pokemon.name]);
+  
   const getCardClasses = () => {
     const classes = [`pokemon-card`, position];
     
@@ -36,12 +45,14 @@ function PokemonCard({
 
   const handleImageError = (e) => {
     console.log(`${position} Pokemon image failed to load:`, pokemon.sprite);
+    setImageLoadState('error');
     e.target.style.display = 'block';
     e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%23f0f0f0"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-family="Arial" font-size="16" fill="%23666">No Image</text></svg>';
   };
 
   const handleImageLoad = () => {
     console.log(`${position} Pokemon image loaded:`, pokemon.name);
+    setImageLoadState('loaded');
   };
 
   return (
@@ -53,16 +64,26 @@ function PokemonCard({
           : undefined
       }
     >
+      {/* Show skeleton while image is loading */}
+      {imageLoadState === 'loading' && (
+        <SkeletonImage 
+          width={200} 
+          height={200} 
+          className="pokemon-image-skeleton"
+        />
+      )}
+      
       <img 
         src={pokemon.sprite || '/placeholder-pokemon.png'}
         alt={position === 'left' ? "" : pokemon.name}
         width="200"
         height="200"
         loading={position === 'left' ? "eager" : "lazy"}
-        className="pokemon-image"
+        className={`pokemon-image ${imageLoadState === 'loading' ? 'image-loading' : ''}`}
         role={position === 'left' ? "presentation" : undefined}
         onError={handleImageError}
         onLoad={handleImageLoad}
+        style={{ display: imageLoadState === 'loading' ? 'none' : 'block' }}
       />
       
       <h2 
