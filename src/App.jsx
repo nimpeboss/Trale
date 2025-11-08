@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import './App.css';
 import PokemonCard from './components/PokemonCard';
 import GameControls from './components/GameControls';
@@ -10,6 +10,7 @@ import {
   ScoreDisplaySkeleton, 
   GameControlsSkeleton 
 } from './components/LoadingSkeletons';
+import OfflineStorage from './utils/offlineStorage';
 
 function App() {
   const [leftPokemon,
@@ -48,6 +49,9 @@ function App() {
   setScreenReaderAnnouncement]=useState("");
   const [animateCards,
   setAnimateCards]=useState(false);
+  
+  // Initialize offline storage
+  const offlineStorage = useMemo(() => new OfflineStorage(), []);
 
   const toggleDarkMode=()=> {
     const newDarkMode= !darkMode;
@@ -126,6 +130,47 @@ function App() {
       }
   }, [streak, bestStreak]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Online/Offline detection
+  useEffect(() => {
+    // Online/offline event listeners removed (no isOnline state)
+    // You can add custom offline UI here if desired
+    return () => {};
+  }, []);
+
+  // Load game state from offline storage on mount
+  useEffect(() => {
+    const loadGameState = async () => {
+      const savedState = await offlineStorage.loadGameState();
+      if (savedState) {
+        setScore(savedState.score || 0);
+        setStreak(savedState.streak || 0);
+        if (savedState.highScore > highScore) {
+          setHighScore(savedState.highScore);
+        }
+        if (savedState.bestStreak > bestStreak) {
+          setBestStreak(savedState.bestStreak);
+        }
+      }
+    };
+    loadGameState();
+  }, [offlineStorage, highScore, bestStreak]);
+
+  // Save game state to offline storage when it changes
+  useEffect(() => {
+    const saveGameState = async () => {
+      await offlineStorage.saveGameState({
+        score,
+        streak,
+        highScore,
+        bestStreak,
+        timestamp: Date.now()
+      });
+    };
+    if (score > 0 || streak > 0) {
+      saveGameState();
+    }
+  }, [score, streak, highScore, bestStreak, offlineStorage]);
+
   const stats=[ {
     key: "totalStats",
       label: "Base Stat Total",
@@ -196,31 +241,37 @@ function App() {
 
   const fetchPokemon=async (id)=> {
     console.log("Fetching Pokemon with ID:", id);
+    // Try cache first
+    let cached = await offlineStorage.getCachedPokemon(id);
+    if (cached) {
+      console.log("Loaded from cache:", cached.name);
+      return cached;
+    }
     try {
-      const response=await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
         cache: "force-cache",
       });
-      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const data = await response.json();
+      const totalStats = data.stats.reduce((sum, stat) => sum + stat.base_stat, 0);
+      const sprite = sanitizeUrl(data.sprites.other["official-artwork"].front_default || data.sprites.front_default);
       
-      const data=await response.json();
-
-      const totalStats=data.stats.reduce((sum, stat)=> sum + stat.base_stat, 0);
-      const sprite=sanitizeUrl(data.sprites.other["official-artwork"].front_default || data.sprites.front_default);
-
-      // Preload image
+      // Preload image with promise-based loading
       if (sprite) {
-        const img=new Image();
-        img.src=sprite;
+        await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve();
+          img.onerror = () => reject();
+          img.src = sprite;
+        });
       }
-
       const pokemon = {
         id: data.id,
         name: data.name,
         sprite: sprite,
-        types: data.types.map((t)=> t.type.name),
+        types: data.types.map((t) => t.type.name),
         totalStats: totalStats,
         height: data.height,
         weight: data.weight,
@@ -229,11 +280,20 @@ function App() {
         defense: data.stats[2].base_stat,
         speed: data.stats[5].base_stat,
       };
-
+      // Save to cache
+      await offlineStorage.savePokemonToCache(pokemon);
       console.log("Successfully fetched:", pokemon.name);
       return pokemon;
     } catch (error) {
-      console.error(`Error fetching Pokemon ${id}:`, error);
+  console.error(`Error fetching Pokemon ${id}:`, error);
+      // If offline, try fallback
+      if (!navigator.onLine) {
+        const fallback = await offlineStorage.getFallbackPokemon(id);
+        if (fallback) {
+          console.log("Using fallback Pokemon:", fallback.name);
+          return fallback;
+        }
+      }
       throw error;
     }
   };
@@ -393,9 +453,12 @@ const handleGuess=(guess)=> {
   setIsCorrect(correct);
 
   // Accessibility announcement
-  const announcement = correct 
-    ? `Correct! ${rightPokemon.name} has ${rightValue} ${currentStat.label.toLowerCase()}, which is ${guess} than ${leftPokemon.name}'s ${leftValue}. Score: ${score + 1}`
-    : `Wrong! ${rightPokemon.name} has ${rightValue} ${currentStat.label.toLowerCase()}, not ${guess} than ${leftPokemon.name}'s ${leftValue}. Game over.`;
+  let announcement;
+  if (correct) {
+    announcement = 'Correct! ' + rightPokemon.name + ' has ' + rightValue + ' ' + currentStat.label.toLowerCase() + ', which is ' + guess + ' than ' + leftPokemon.name + "'s " + leftValue + '. Score: ' + (score + 1) + '.';
+  } else {
+    announcement = 'Wrong! ' + rightPokemon.name + ' has ' + rightValue + ' ' + currentStat.label.toLowerCase() + ', not ' + guess + ' than ' + leftPokemon.name + "'s " + leftValue + '. Game over.';
+  }
 
   setScreenReaderAnnouncement(announcement);
 
@@ -624,20 +687,12 @@ return (<main className="game-container"
   }
 
     {
-    touchFeedback && (<div className= {
-        `touch-feedback $ {
-          touchFeedback
-        }
-
-        `
-      }
-
-      aria-hidden="true"> {
-        touchFeedback==='success'? '✓' : '✗'
-      }
-
-      </div>)
-  }
+      touchFeedback && (
+        <div className={"touch-feedback " + touchFeedback} aria-hidden="true">
+          {touchFeedback === 'success' ? '✓' : '✗'}
+        </div>
+      )
+    }
 
     {
     /* Mobile swipe instructions */
@@ -678,19 +733,9 @@ return (<main className="game-container"
   }
 
     {
-    showResult && (<div className= {
-        `result-indicator $ {
-          isCorrect ? "correct" : "incorrect"
-        }
-
-        pop-in`
-      }
-
-      > {
-        " "
-      }
-
-        {
+      showResult && (
+        <div className={`result-indicator ${isCorrect ? "correct" : "incorrect"} pop-in`}>
+          {
         isCorrect ? "✓ Correct!" : "✗ Wrong!"
       }
 
