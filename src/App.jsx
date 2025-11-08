@@ -1,58 +1,8 @@
-import {
-  useState,
-  useEffect
-}
-
-from "react";
-import PropTypes from "prop-types";
-import "./App.css";
-
-function AnimatedNumber( {
-    value, duration=1000
-  }
-
-) {
-  const [displayValue,
-  setDisplayValue]=useState(0);
-
-  useEffect(()=> {
-      let startTime=null;
-      const startValue=0;
-
-      const animate=(currentTime)=> {
-        if ( !startTime) startTime=currentTime;
-
-        const progress=Math.min((currentTime - startTime) / duration, 1);
-        const easeOutQuart=1 - Math.pow(1 - progress, 4);
-        const current=Math.floor(startValue + (value - startValue) * easeOutQuart);
-
-        setDisplayValue(current);
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        }
-      }
-
-      ;
-
-      requestAnimationFrame(animate);
-    }
-
-    , [value, duration]);
-
-  return <span> {
-    displayValue
-  }
-
-  </span>;
-}
-
-AnimatedNumber.propTypes= {
-  value: PropTypes.number.isRequired,
-    duration: PropTypes.number,
-}
-
-;
+import { useState, useEffect } from 'react';
+import './App.css';
+import PokemonCard from './components/PokemonCard';
+import GameControls from './components/GameControls';
+import ScoreDisplay from './components/ScoreDisplay';
 
 function App() {
   const [leftPokemon,
@@ -676,169 +626,23 @@ return (<main className="game-container"
     isMobile && !showResult && leftPokemon && rightPokemon && (<div className="mobile-instructions"aria-hidden="true"> <span>Swipe ↑ Higher | Swipe ↓ Lower</span> </div>)
   }
 
-  <button onClick= {
-    toggleDarkMode
-  }
+  <ScoreDisplay 
+    score={score}
+    highScore={highScore}
+    streak={streak}
+    bestStreak={bestStreak}
+    streakMilestone={streakMilestone}
+  />
 
-  className="dark-mode-toggle"
-
-  aria-label= {
-    `Switch to $ {
-      darkMode ? 'light' : 'dark'
-    }
-
-    mode`
-  }
-
-  > {
-    darkMode ? "☀️" : "🌙"
-  }
-
-  </button> {
-    " "
-  }
-
-  <div className="score-container slide-down"> {
-    " "
-  }
-
-  <div className="score">Score: {
-    score
-  }
-
-  </div> {
-    " "
-  }
-
-  <div className="high-score">High Score: {
-    highScore
-  }
-
-  </div> {
-    " "
-  }
-
-  <div className="streak"> {
-    " "
-  }
-
-  🔥 Streak: {
-    streak
-  }
-
-    {
-    bestStreak > 0 && (<span className="best-streak"> (Best: {
-          bestStreak
-        }
-
-      )</span>)
-  }
-
-  </div> {
-    " "
-  }
-
-  </div> {
-    " "
-  }
-
-    {
-    streakMilestone && (<div className="streak-milestone pop-in"> {
-        " "
-      }
-
-      🔥 {
-        streakMilestone
-      }
-
-      Streak ! Keep it going ! 🔥 {
-        " "
-      }
-
-      </div>)
-  }
-
-  <div className="pokemon-cards"> {
-    " "
-  }
-
-  <div className={`pokemon-card left ${animateCards ? "slide-in-left" : ""} ${showResult && isCorrect === false ? "shake" : ""}`}
-  aria-label={`${leftPokemon.name} - type Pokemon with ${currentStat.label} of ${leftPokemon[currentStat.key]}`}
-  > {
-    " "
-  }
-
-  <img 
-    src={leftPokemon.sprite || '/placeholder-pokemon.png'}
-    alt=""
-    width="200"
-    height="200"
-    loading="eager"
-    className="pokemon-image"
-    role="presentation"
-    onError={(e) => {
-      console.log('Left Pokemon image failed to load:', leftPokemon.sprite);
-      e.target.style.display = 'block';
-      e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%23f0f0f0"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-family="Arial" font-size="16" fill="%23666">No Image</text></svg>';
-    }}
-    onLoad={() => console.log('Left Pokemon image loaded:', leftPokemon.name)}
-  /> {
-    " "
-  }
-
-  <h2 className="pokemon-name"id="left-pokemon"> {
-    leftPokemon.name
-  }
-
-  </h2> {
-    " "
-  }
-
-  <div className="type-badges" aria-label={`Types: ${leftPokemon.types.join(', ')}`}>
-    {leftPokemon.types.map((type) => (
-      <span 
-        key={type} 
-        className={`type-badge type-${type}`}
-        aria-hidden="true"
-      >
-        {type}
-      </span>
-    ))}
-  </div> <div className="stat-display"> {
-    " "
-  }
-
-  <p className="stat-label"id="current-stat-label"> {
-    currentStat.label
-  }
-
-  </p> {
-    " "
-  }
-
-  <p className="stat-value"aria-describedby="current-stat-label"> {
-    " "
-  }
-
-  <AnimatedNumber value= {
-    leftPokemon[currentStat.key]
-  }
-
-  /> {
-    " "
-  }
-
-  </p> {
-    " "
-  }
-
-  </div> {
-    " "
-  }
-
-  </div> {
-    " "
-  }
+  <div className="pokemon-cards">
+    <PokemonCard 
+      pokemon={leftPokemon}
+      currentStat={currentStat}
+      position="left"
+      animateCards={animateCards}
+      showResult={showResult}
+      isCorrect={isCorrect}
+    />
 
   <div className="vs-section"> {
     " "
@@ -868,197 +672,31 @@ return (<main className="game-container"
       </div>)
   }
 
-  <div className="buttons"> {
-    " "
-  }
-
-  <button onClick= {
-    ()=> handleGuess("higher")
-  }
-
-  className= {
-    `guess-button higher $ {
-      isMobile ? 'mobile-button' : ''
-    }
-
-    `
-  }
-
-  disabled= {
-    showResult
-  }
-
-  aria-label= {
-    `Guess that $ {
-      rightPokemon.name
-    }
-
-    's ${currentStat.label.toLowerCase()} is higher than ${leftPokemon[currentStat.key]}`}
-aria-describedby="current-stat-label"
-
-    > {
-      " "
-    }
-
-    <span className="button-icon"aria-hidden="true"> {
-      " "
-    }
-
-    ↑ {
-      " "
-    }
-
-    </span> {
-      " "
-    }
-
-    HIGHER {
-      " "
-    }
-
-      {
-      isMobile && <span className="mobile-hint"aria-hidden="true">(Swipe ↑)</span>
-    }
-
-    </button> {
-      " "
-    }
-
-    <button onClick= {
-      ()=> handleGuess("lower")
-    }
-
-    className= {
-      `guess-button lower $ {
-        isMobile ? 'mobile-button' : ''
-      }
-
-      `
-    }
-
-    disabled= {
-      showResult
-    }
-
-    aria-label= {
-      `Guess that $ {
-        rightPokemon.name
-      }
-
-      's ${currentStat.label.toLowerCase()} is lower than ${leftPokemon[currentStat.key]}`}
-aria-describedby="current-stat-label"
-
-      > {
-        " "
-      }
-
-      <span className="button-icon"aria-hidden="true"> {
-        " "
-      }
-
-      ↓ {
-        " "
-      }
-
-      </span> {
-        " "
-      }
-
-      LOWER {
-        " "
-      }
-
-        {
-        isMobile && <span className="mobile-hint"aria-hidden="true">(Swipe ↓)</span>
-      }
-
-      </button> {
-        " "
-      }
+  <GameControls 
+    onGuess={handleGuess}
+    onToggleDarkMode={toggleDarkMode}
+    showResult={showResult}
+    isMobile={isMobile}
+    darkMode={darkMode}
+    rightPokemon={rightPokemon}
+    leftPokemon={leftPokemon}
+    currentStat={currentStat}
+  />
 
       </div> {
         " "
       }
 
-      </div> {
-        " "
-      }
+    <PokemonCard 
+      pokemon={rightPokemon}
+      currentStat={currentStat}
+      position="right"
+      animateCards={animateCards}
+      showResult={showResult}
+      isCorrect={isCorrect}
+    />
+  </div>
 
-      <div className={`pokemon-card right ${animateCards ? "slide-in-right" : ""} ${showResult && isCorrect ? "glow-success" : ""} ${showResult && !isCorrect ? "glow-fail" : ""}`}
-      > <img 
-        src={rightPokemon.sprite || '/placeholder-pokemon.png'}
-        alt={rightPokemon.name}
-        width="200"
-        height="200"
-        loading="lazy"
-        className="pokemon-image"
-        onError={(e) => {
-          console.log('Right Pokemon image failed to load:', rightPokemon.sprite);
-          e.target.style.display = 'block';
-          e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%23f0f0f0"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-family="Arial" font-size="16" fill="%23666">No Image</text></svg>';
-        }}
-        onLoad={() => console.log('Right Pokemon image loaded:', rightPokemon.name)}
-      /> {
-        " "
-      }
-
-      <h2 className="pokemon-name"> {
-        rightPokemon.name
-      }
-
-      </h2> {
-        " "
-      }
-
-      <div className="type-badges">
-        {rightPokemon.types.map((type) => (
-          <span 
-            key={type} 
-            className={`type-badge type-${type}`}
-          >
-            {type}
-          </span>
-        ))}
-      </div> <div className="stat-display"> {
-        " "
-      }
-
-      <p className="stat-label"> {
-        currentStat.label
-      }
-
-      </p> {
-        " "
-      }
-
-        {
-        showResult ? (<p className="stat-value revealed pop-in"> {
-            " "
-          }
-
-          <AnimatedNumber value= {
-            rightPokemon[currentStat.key]
-          }
-
-          /> {
-            " "
-          }
-
-          </p>) : (<p className="stat-value hidden pulse-slow">???</p>)
-      }
-
-      </div> {
-        " "
-      }
-
-      </div> {
-        " "
-      }
-
-      </div> {
-        " "
-      }
-
-      </main>);
+  </main>);
     }
   export default App;
