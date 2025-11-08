@@ -910,6 +910,7 @@ body.dark-mode .skeleton {
   }
 }
 
+<<<<<<< HEAD
 /* Enhanced Mobile Styles */
 @media (max-width: 768px) {
   .game-container {
@@ -1190,6 +1191,8 @@ body.dark-mode .skeleton {
   }
 }
 
+=======
+>>>>>>> parent of 272d113 (backup)
 .dark-mode-toggle {
   position: fixed;
   top: 20px;
