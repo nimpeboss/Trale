@@ -1,0 +1,19 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#f44336" stroke="#1a1a1a" stroke-width="8"/>
+  
+  <!-- Bottom half (white) -->
+  <path d="M 256 16 A 240 240 0 0 1 256 496 Z" fill="#ffffff"/>
+  
+  <!-- Center line -->
+  <rect x="16" y="248" width="480" height="16" fill="#1a1a1a"/>
+  
+  <!-- Center circle (outer) -->
+  <circle cx="256" cy="256" r="48" fill="#ffffff" stroke="#1a1a1a" stroke-width="6"/>
+  
+  <!-- Center circle (inner) -->
+  <circle cx="256" cy="256" r="20" fill="#1a1a1a"/>
+  
+  <!-- Highlight for 3D effect -->
+  <ellipse cx="200" cy="180" rx="60" ry="40" fill="#ff6659" opacity="0.6"/>
+</svg>
