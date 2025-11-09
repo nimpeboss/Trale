@@ -560,109 +560,92 @@ if (gameOver) {
     </div>);
 }
 
-return (<main className="game-container"
-
-  onTouchStart= {
-    handleTouchStart
-  }
-
-  onTouchEnd= {
-    handleTouchEnd
-  }
-
-  aria-label="Pokemon Higher or Lower Game"
-
-  > {
-    /* Screen reader announcements */
-  }
-
-  <div aria-live="polite"
-  aria-atomic="true"
-  className="sr-only"
-
-  > {
-    screenReaderAnnouncement
-  }
-
-  </div> {
-    /* Touch feedback overlay */
-  }
-
-    {
-    touchFeedback && (
-      <div
-        className={`touch-feedback ${touchFeedback}`}
-        aria-hidden="true"
-      >
+return (
+  <main
+    className="game-container"
+    onTouchStart={handleTouchStart}
+    onTouchEnd={handleTouchEnd}
+    aria-label="Pokemon Higher or Lower Game"
+    style={{
+      minHeight: '100vh',
+      width: '100vw',
+      maxWidth: '100vw',
+      overflowX: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      boxSizing: 'border-box',
+      padding: '1rem',
+    }}
+  >
+    {/* Screen reader announcements */}
+    <div aria-live="polite" aria-atomic="true" className="sr-only">
+      {screenReaderAnnouncement}
+    </div>
+    {/* Touch feedback overlay */}
+    {touchFeedback && (
+      <div className={`touch-feedback ${touchFeedback}`} aria-hidden="true">
         {touchFeedback === 'success' ? '✓' : '✗'}
       </div>
     )}
-
-    {
-    /* Mobile swipe instructions */
-  }
-
-    {
-    isMobile && !showResult && leftPokemon && rightPokemon && (<div className="mobile-instructions"aria-hidden="true"> <span>Swipe ↑ Higher | Swipe ↓ Lower</span> </div>)
-  }
-
-  <ScoreDisplay 
-    score={score}
-    highScore={highScore}
-    streak={streak}
-    bestStreak={bestStreak}
-    streakMilestone={streakMilestone}
-  />
-
-  <div className="pokemon-cards">
-    <PokemonCard 
-      pokemon={leftPokemon}
-      currentStat={currentStat}
-      position="left"
-      animateCards={animateCards}
-      showResult={showResult}
-      isCorrect={isCorrect}
+    <ScoreDisplay
+      score={score}
+      highScore={highScore}
+      streak={streak}
+      bestStreak={bestStreak}
+      streakMilestone={streakMilestone}
     />
-
-  <div className="vs-section"> {
-    " "
-  }
-
-  <div className="vs-text pulse-slow">VS</div> {
-    " "
-  }
-
-    {showResult && (
-      <div className={`result-indicator ${isCorrect ? 'correct' : 'incorrect'} pop-in`}>
-        {isCorrect ? '✓ Correct!' : '✗ Wrong!'}
+    <div
+      className="pokemon-cards"
+      style={{
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        maxWidth: 900,
+        margin: '0 auto',
+        gap: '1rem',
+        boxSizing: 'border-box',
+      }}
+    >
+      <PokemonCard
+        pokemon={leftPokemon}
+        currentStat={currentStat}
+        position="left"
+        animateCards={animateCards}
+        showResult={showResult}
+        isCorrect={isCorrect}
+      />
+      <div className="vs-section" style={{ minWidth: 80, textAlign: 'center' }}>
+        <div className="vs-text pulse-slow">VS</div>
+        {showResult && (
+          <div className={`result-indicator ${isCorrect ? 'correct' : 'incorrect'} pop-in`}>
+            {isCorrect ? '✓ Correct!' : '✗ Wrong!'}
+          </div>
+        )}
+        <GameControls
+          onGuess={handleGuess}
+          onToggleDarkMode={toggleDarkMode}
+          showResult={showResult}
+          isMobile={isMobile}
+          darkMode={darkMode}
+          rightPokemon={rightPokemon}
+          leftPokemon={leftPokemon}
+          currentStat={currentStat}
+        />
       </div>
-    )}
-
-  <GameControls 
-    onGuess={handleGuess}
-    onToggleDarkMode={toggleDarkMode}
-    showResult={showResult}
-    isMobile={isMobile}
-    darkMode={darkMode}
-    rightPokemon={rightPokemon}
-    leftPokemon={leftPokemon}
-    currentStat={currentStat}
-  />
-
-      </div> {
-        " "
-      }
-
-    <PokemonCard 
-      pokemon={rightPokemon}
-      currentStat={currentStat}
-      position="right"
-      animateCards={animateCards}
-      showResult={showResult}
-      isCorrect={isCorrect}
-    />
-  </div>
-
-  </main>);
+      <PokemonCard
+        pokemon={rightPokemon}
+        currentStat={currentStat}
+        position="right"
+        animateCards={animateCards}
+        showResult={showResult}
+        isCorrect={isCorrect}
+      />
+    </div>
+  </main>
+);
     }
   export default App;
