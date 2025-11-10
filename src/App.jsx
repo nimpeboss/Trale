@@ -33,10 +33,7 @@ function App() {
   setStreakMilestone]=useState(null);
   const [darkMode,
   setDarkMode]=useState(false);
-  const [isMobile,
-  setIsMobile]=useState(false);
-  const [touchFeedback,
-  setTouchFeedback]=useState(null);
+  const [touchFeedback]=useState(null); // (still used for tap/click feedback)
   const [screenReaderAnnouncement,
   setScreenReaderAnnouncement]=useState("");
   const [animateCards,
@@ -80,17 +77,7 @@ function App() {
         document.body.classList.add("dark-mode");
       }
 
-      // Mobile detection
-      const checkMobile=()=> {
-        setIsMobile(globalThis.innerWidth <= 768 || 'ontouchstart' in globalThis);
-      }
-
-      ;
-
-      checkMobile();
-      window.addEventListener('resize', checkMobile);
-
-      return ()=> window.removeEventListener('resize', checkMobile);
+      // Mobile detection removed
     }
 
     , []);
@@ -395,16 +382,7 @@ const handleGuess=(guess)=> {
 
   setScreenReaderAnnouncement(announcement);
 
-  // Touch feedback for mobile
-  if (isMobile) {
-    setTouchFeedback(correct ? 'success' : 'error');
-    setTimeout(()=> setTouchFeedback(null), 300);
-
-    // Haptic feedback if available
-    if ('vibrate'in navigator) {
-      navigator.vibrate(correct ? [50] : [100, 50, 100]);
-    }
-  }
+  // Touch feedback for mobile (swipe removed, but keep for tap/click)
 
   if (correct) {
     handleCorrectGuess();
@@ -417,45 +395,7 @@ const handleGuess=(guess)=> {
 
 ;
 
-// Touch/swipe handlers for mobile
-const handleTouchStart=(e)=> {
-  if ( !isMobile || showResult) return;
-  const touch=e.touches[0];
-
-  setTouchStart( {
-      x: touch.clientX, y: touch.clientY
-    }
-
-  );
-}
-
-;
-
-const handleTouchEnd=(e)=> {
-  if ( !isMobile || showResult || !touchStart) return;
-
-  const touch=e.changedTouches[0];
-  const deltaY=touchStart.y - touch.clientY;
-  const deltaX=Math.abs(touchStart.x - touch.clientX);
-
-  // Only trigger if it's more vertical than horizontal and significant distance
-  if (Math.abs(deltaY) > deltaX && Math.abs(deltaY) > 50) {
-    if (deltaY > 0) {
-      handleGuess("higher");
-    }
-
-    else {
-      handleGuess("lower");
-    }
-  }
-
-  setTouchStart(null);
-}
-
-;
-
-const [touchStart,
-setTouchStart]=useState(null);
+// Swipe/touch handlers removed
 
 const restartGame=()=> {
   setScore(0);
@@ -563,8 +503,7 @@ if (gameOver) {
 return (
   <main
     className="game-container"
-    onTouchStart={handleTouchStart}
-    onTouchEnd={handleTouchEnd}
+  // Swipe handlers removed
     aria-label="Pokemon Higher or Lower Game"
     style={{
       minHeight: '100vh',
@@ -576,7 +515,8 @@ return (
       alignItems: 'center',
       justifyContent: 'flex-start',
       boxSizing: 'border-box',
-      padding: '1rem',
+  padding: '2rem',
+  fontSize: '1.5rem',
     }}
   >
     {/* Screen reader announcements */}
@@ -600,14 +540,16 @@ return (
       className="pokemon-cards"
       style={{
         display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        maxWidth: 900,
-        margin: '0 auto',
-        gap: '1rem',
-        boxSizing: 'border-box',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '90vw',
+  maxWidth: 1600,
+  margin: '0 auto',
+  gap: '3rem',
+  boxSizing: 'border-box',
+  padding: '2rem',
+  transition: 'all 0.2s',
       }}
     >
       <PokemonCard
@@ -617,6 +559,7 @@ return (
         animateCards={animateCards}
         showResult={showResult}
         isCorrect={isCorrect}
+        style={{ transform: 'scale(1.8)' }}
       />
       <div className="vs-section" style={{ minWidth: 80, textAlign: 'center' }}>
         <div className="vs-text pulse-slow">VS</div>
@@ -629,7 +572,6 @@ return (
           onGuess={handleGuess}
           onToggleDarkMode={toggleDarkMode}
           showResult={showResult}
-          isMobile={isMobile}
           darkMode={darkMode}
           rightPokemon={rightPokemon}
           leftPokemon={leftPokemon}
@@ -643,6 +585,7 @@ return (
         animateCards={animateCards}
         showResult={showResult}
         isCorrect={isCorrect}
+        style={{ transform: 'scale(1.8)' }}
       />
     </div>
   </main>
