@@ -82,7 +82,7 @@ function App() {
 
       // Mobile detection
       const checkMobile=()=> {
-        setIsMobile(window.innerWidth <=768 || 'ontouchstart'in window);
+        setIsMobile(globalThis.innerWidth <= 768 || 'ontouchstart' in globalThis);
       }
 
       ;
@@ -589,20 +589,14 @@ return (<main className="game-container"
   }
 
     {
-    touchFeedback && (<div className= {
-        `touch-feedback $ {
-          touchFeedback
-        }
-
-        `
-      }
-
-      aria-hidden="true"> {
-        touchFeedback==='success'? '✓' : '✗'
-      }
-
-      </div>)
-  }
+    touchFeedback && (
+      <div
+        className={`touch-feedback ${touchFeedback}`}
+        aria-hidden="true"
+      >
+        {touchFeedback === 'success' ? '✓' : '✗'}
+      </div>
+    )}
 
     {
     /* Mobile swipe instructions */
@@ -638,25 +632,11 @@ return (<main className="game-container"
     " "
   }
 
-    {
-    showResult && (<div className= {
-        `result-indicator $ {
-          isCorrect ? "correct" : "incorrect"
-        }
-
-        pop-in`
-      }
-
-      > {
-        " "
-      }
-
-        {
-        isCorrect ? "✓ Correct!" : "✗ Wrong!"
-      }
-
-      </div>)
-  }
+    {showResult && (
+      <div className={`result-indicator ${isCorrect ? 'correct' : 'incorrect'} pop-in`}>
+        {isCorrect ? '✓ Correct!' : '✗ Wrong!'}
+      </div>
+    )}
 
   <GameControls 
     onGuess={handleGuess}
