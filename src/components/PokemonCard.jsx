@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import AnimatedNumber from './AnimatedNumber';
 import TypeBadges from './TypeBadges';
+import './PokemonCard.css';
 
 function PokemonCard({ 
   pokemon, 
@@ -13,25 +14,11 @@ function PokemonCard({
   style = {},
 }) {
   const getCardClasses = () => {
-    const classes = [`pokemon-card`, position];
-    
-    if (animateCards) {
-      classes.push(position === 'left' ? 'slide-in-left' : 'slide-in-right');
-    }
-    
-    if (showResult) {
-      if (position === 'left' && isCorrect === false) {
-        classes.push('shake');
-      }
-      if (position === 'right') {
-        classes.push(isCorrect ? 'glow-success' : 'glow-fail');
-      }
-    }
-    
-    if (className) {
-      classes.push(className);
-    }
-    
+    let classes = ['pokemon-card'];
+    if (animateCards) classes.push('animate-in');
+    if (showResult && isCorrect === true) classes.push('correct');
+    if (showResult && isCorrect === false) classes.push('incorrect');
+    if (className) classes.push(className);
     return classes.join(' ');
   };
 
@@ -41,26 +28,11 @@ function PokemonCard({
     e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%23f0f0f0"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-family="Arial" font-size="16" fill="%23666">No Image</text></svg>';
   };
 
-  const handleImageLoad = () => {
-    console.log(`${position} Pokemon image loaded:`, pokemon.name);
-  };
+  const handleImageLoad = () => {};
 
-  // Make the cards much larger
-  const isMobile = window.innerWidth <= 768;
-  const cardStyle = {
-    width: isMobile ? '95vw' : '400px',
-    minHeight: isMobile ? '320px' : '520px',
-    maxWidth: isMobile ? '98vw' : '90vw',
-    maxHeight: isMobile ? '60vh' : '90vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: isMobile ? '1.1rem' : '2rem',
-    boxSizing: 'border-box',
-    ...style,
-  };
-  const imgSize = isMobile ? 160 : 320;
+  // Card sizing is now handled by CSS for responsiveness
+  const cardStyle = { ...style };
+  const imgSize = 240;
 
   return (
     <div 
@@ -71,6 +43,9 @@ function PokemonCard({
           : undefined
       }
       style={cardStyle}
+      tabIndex={0}
+      role="region"
+      aria-labelledby={position === "left" ? "left-pokemon" : undefined}
     >
       <img 
         src={pokemon.sprite || '/placeholder-pokemon.png'}
@@ -82,7 +57,7 @@ function PokemonCard({
         role={position === 'left' ? "presentation" : undefined}
         onError={handleImageError}
         onLoad={handleImageLoad}
-  style={{ width: '100%', height: 'auto', maxWidth: isMobile ? 160 : 320, maxHeight: isMobile ? 160 : 320, objectFit: 'contain' }}
+        tabIndex={-1}
       />
       <h2 
         className="pokemon-name"
@@ -109,7 +84,7 @@ function PokemonCard({
                 <AnimatedNumber value={pokemon[currentStat.key]} />
               </p>
             ) : (
-              <p className="stat-value hidden pulse-slow">???</p>
+              <p className="stat-value hidden pulse-slow" aria-label='Hidden stat value'>???</p>
             )}
           </>
         )}
