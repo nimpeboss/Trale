@@ -33,7 +33,10 @@ function App() {
   setStreakMilestone]=useState(null);
   const [darkMode,
   setDarkMode]=useState(false);
-  const [touchFeedback]=useState(null); // (still used for tap/click feedback)
+  const [isMobile,
+  setIsMobile]=useState(false);
+  const [touchFeedback,
+  setTouchFeedback]=useState(null);
   const [screenReaderAnnouncement,
   setScreenReaderAnnouncement]=useState("");
   const [animateCards,
@@ -77,7 +80,17 @@ function App() {
         document.body.classList.add("dark-mode");
       }
 
-      // Mobile detection removed
+      // Mobile detection
+      const checkMobile=()=> {
+        setIsMobile(globalThis.innerWidth <= 768 || 'ontouchstart' in globalThis);
+      }
+
+      ;
+
+      checkMobile();
+      window.addEventListener('resize', checkMobile);
+
+      return ()=> window.removeEventListener('resize', checkMobile);
     }
 
     , []);
@@ -382,7 +395,16 @@ const handleGuess=(guess)=> {
 
   setScreenReaderAnnouncement(announcement);
 
-  // Touch feedback for mobile (swipe removed, but keep for tap/click)
+  // Touch feedback for mobile
+  if (isMobile) {
+    setTouchFeedback(correct ? 'success' : 'error');
+    setTimeout(()=> setTouchFeedback(null), 300);
+
+    // Haptic feedback if available
+    if ('vibrate'in navigator) {
+      navigator.vibrate(correct ? [50] : [100, 50, 100]);
+    }
+  }
 
   if (correct) {
     handleCorrectGuess();
@@ -395,7 +417,45 @@ const handleGuess=(guess)=> {
 
 ;
 
-// Swipe/touch handlers removed
+// Touch/swipe handlers for mobile
+const handleTouchStart=(e)=> {
+  if ( !isMobile || showResult) return;
+  const touch=e.touches[0];
+
+  setTouchStart( {
+      x: touch.clientX, y: touch.clientY
+    }
+
+  );
+}
+
+;
+
+const handleTouchEnd=(e)=> {
+  if ( !isMobile || showResult || !touchStart) return;
+
+  const touch=e.changedTouches[0];
+  const deltaY=touchStart.y - touch.clientY;
+  const deltaX=Math.abs(touchStart.x - touch.clientX);
+
+  // Only trigger if it's more vertical than horizontal and significant distance
+  if (Math.abs(deltaY) > deltaX && Math.abs(deltaY) > 50) {
+    if (deltaY > 0) {
+      handleGuess("higher");
+    }
+
+    else {
+      handleGuess("lower");
+    }
+  }
+
+  setTouchStart(null);
+}
+
+;
+
+const [touchStart,
+setTouchStart]=useState(null);
 
 const restartGame=()=> {
   setScore(0);
@@ -500,95 +560,109 @@ if (gameOver) {
     </div>);
 }
 
-return (
-  <main
-    className="game-container"
-  // Swipe handlers removed
-    aria-label="Pokemon Higher or Lower Game"
-    style={{
-      minHeight: '100vh',
-      width: '100vw',
-      maxWidth: '100vw',
-      overflowX: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      boxSizing: 'border-box',
-  padding: '2rem',
-  fontSize: '1.5rem',
-    }}
-  >
-    {/* Screen reader announcements */}
-    <div aria-live="polite" aria-atomic="true" className="sr-only">
-      {screenReaderAnnouncement}
-    </div>
-    {/* Touch feedback overlay */}
-    {touchFeedback && (
-      <div className={`touch-feedback ${touchFeedback}`} aria-hidden="true">
+return (<main className="game-container"
+
+  onTouchStart= {
+    handleTouchStart
+  }
+
+  onTouchEnd= {
+    handleTouchEnd
+  }
+
+  aria-label="Pokemon Higher or Lower Game"
+
+  > {
+    /* Screen reader announcements */
+  }
+
+  <div aria-live="polite"
+  aria-atomic="true"
+  className="sr-only"
+
+  > {
+    screenReaderAnnouncement
+  }
+
+  </div> {
+    /* Touch feedback overlay */
+  }
+
+    {
+    touchFeedback && (
+      <div
+        className={`touch-feedback ${touchFeedback}`}
+        aria-hidden="true"
+      >
         {touchFeedback === 'success' ? '✓' : '✗'}
       </div>
     )}
-    <ScoreDisplay
-      score={score}
-      highScore={highScore}
-      streak={streak}
-      bestStreak={bestStreak}
-      streakMilestone={streakMilestone}
+
+    {
+    /* Mobile swipe instructions */
+  }
+
+    {
+    isMobile && !showResult && leftPokemon && rightPokemon && (<div className="mobile-instructions"aria-hidden="true"> <span>Swipe ↑ Higher | Swipe ↓ Lower</span> </div>)
+  }
+
+  <ScoreDisplay 
+    score={score}
+    highScore={highScore}
+    streak={streak}
+    bestStreak={bestStreak}
+    streakMilestone={streakMilestone}
+  />
+
+  <div className="pokemon-cards">
+    <PokemonCard 
+      pokemon={leftPokemon}
+      currentStat={currentStat}
+      position="left"
+      animateCards={animateCards}
+      showResult={showResult}
+      isCorrect={isCorrect}
     />
-    <div
-      className="pokemon-cards"
-      style={{
-        display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: '90vw',
-  maxWidth: 1600,
-  margin: '0 auto',
-  gap: '3rem',
-  boxSizing: 'border-box',
-  padding: '2rem',
-  transition: 'all 0.2s',
-      }}
-    >
-      <PokemonCard
-        pokemon={leftPokemon}
-        currentStat={currentStat}
-        position="left"
-        animateCards={animateCards}
-        showResult={showResult}
-        isCorrect={isCorrect}
-        style={{ transform: 'scale(1.8)' }}
-      />
-      <div className="vs-section" style={{ minWidth: 80, textAlign: 'center' }}>
-        <div className="vs-text pulse-slow">VS</div>
-        {showResult && (
-          <div className={`result-indicator ${isCorrect ? 'correct' : 'incorrect'} pop-in`}>
-            {isCorrect ? '✓ Correct!' : '✗ Wrong!'}
-          </div>
-        )}
-        <GameControls
-          onGuess={handleGuess}
-          onToggleDarkMode={toggleDarkMode}
-          showResult={showResult}
-          darkMode={darkMode}
-          rightPokemon={rightPokemon}
-          leftPokemon={leftPokemon}
-          currentStat={currentStat}
-        />
+
+  <div className="vs-section"> {
+    " "
+  }
+
+  <div className="vs-text pulse-slow">VS</div> {
+    " "
+  }
+
+    {showResult && (
+      <div className={`result-indicator ${isCorrect ? 'correct' : 'incorrect'} pop-in`}>
+        {isCorrect ? '✓ Correct!' : '✗ Wrong!'}
       </div>
-      <PokemonCard
-        pokemon={rightPokemon}
-        currentStat={currentStat}
-        position="right"
-        animateCards={animateCards}
-        showResult={showResult}
-        isCorrect={isCorrect}
-        style={{ transform: 'scale(1.8)' }}
-      />
-    </div>
-  </main>
-);
+    )}
+
+  <GameControls 
+    onGuess={handleGuess}
+    onToggleDarkMode={toggleDarkMode}
+    showResult={showResult}
+    isMobile={isMobile}
+    darkMode={darkMode}
+    rightPokemon={rightPokemon}
+    leftPokemon={leftPokemon}
+    currentStat={currentStat}
+  />
+
+      </div> {
+        " "
+      }
+
+    <PokemonCard 
+      pokemon={rightPokemon}
+      currentStat={currentStat}
+      position="right"
+      animateCards={animateCards}
+      showResult={showResult}
+      isCorrect={isCorrect}
+    />
+  </div>
+
+  </main>);
     }
   export default App;

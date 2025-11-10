@@ -1,24 +1,16 @@
 import PropTypes from 'prop-types';
 
-function TypeBadges({ types, showAriaLabel = false }) {
+function TypeBadges({ types, showAriaLabel = true }) {
   return (
-    <div className="type-badges" style={{ display: 'flex', gap: 6 }}>
+    <div 
+      className="type-badges" 
+      aria-label={showAriaLabel ? `Types: ${types.join(', ')}` : undefined}
+    >
       {types.map((type) => (
         <span 
           key={type} 
-          className={`pokemon-type type-${type}`}
-          tabIndex={0}
-          aria-label={showAriaLabel ? `Type: ${type}` : undefined}
-          style={{
-            marginRight: 0,
-            padding: "0.2em 0.7em",
-            borderRadius: "1em",
-            background: "#222",
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: "0.95em",
-            outline: "none",
-          }}
+          className={`type-badge type-${type}`}
+          aria-hidden="true"
         >
           {type}
         </span>
