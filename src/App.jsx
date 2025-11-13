@@ -114,8 +114,7 @@ function App() {
     }
 
     , [streak, bestStreak]);
-  // Removed streakMilestone from dependencies to fix repeated trigger
-
+    
   const stats=[ {
     key: "totalStats",
       label: "Base Stat Total",
