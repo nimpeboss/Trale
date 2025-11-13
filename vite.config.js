@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  // Keep base empty during development so HMR websocket paths resolve correctly.
   base: '/Trale/',
   build: {
     minify: 'terser',
@@ -27,6 +28,17 @@ export default defineConfig({
     sourcemap: false,
     cssCodeSplit: true,
     assetsInlineLimit: 4096,
+  },
+  server: {
+    // Enable HMR and overlay for development. Host and port can be left default.
+    hmr: {
+      protocol: 'ws',
+      overlay: true,
+    },
+    watch: {
+      // Use polling on some environments (containers/WSL). Disabled by default.
+      usePolling: false,
+    },
   },
   optimizeDeps: {
     include: ['react', 'react-dom'],

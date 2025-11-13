@@ -1,6 +1,16 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-function ScoreDisplay({ score, highScore, streak, bestStreak, streakMilestone }) {
+function ScoreDisplay({ score, highScore, streak, bestStreak, streakMilestone, onClearStreakMilestone }) {
+  useEffect(() => {
+    if (streakMilestone && onClearStreakMilestone) {
+      const timeout = setTimeout(() => {
+        onClearStreakMilestone();
+      }, 2000); // Hide after 2 seconds
+      return () => clearTimeout(timeout);
+    }
+  }, [streakMilestone, onClearStreakMilestone]);
+
   return (
     <>
       <div className="score-container slide-down">
@@ -29,6 +39,7 @@ ScoreDisplay.propTypes = {
   streak: PropTypes.number.isRequired,
   bestStreak: PropTypes.number.isRequired,
   streakMilestone: PropTypes.number,
+  onClearStreakMilestone: PropTypes.func,
 };
 
 export default ScoreDisplay;

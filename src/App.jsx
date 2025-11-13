@@ -111,17 +111,10 @@ function App() {
         setBestStreak(streak);
         localStorage.setItem("pokemonBestStreak", streak.toString());
       }
-
-      // Check for streak milestones
-      if (streak > 0 && streak % 5===0 && streak !==streakMilestone) {
-        setStreakMilestone(streak);
-        setTimeout(()=> setStreakMilestone(null), 3000);
-      }
     }
 
-    , [streak, bestStreak, streakMilestone]);
-  // Added streakMilestone to dependencies to fix missing dependency warning
-
+    , [streak, bestStreak]);
+    
   const stats=[ {
     key: "totalStats",
       label: "Base Stat Total",
@@ -612,6 +605,7 @@ return (<main className="game-container"
     streak={streak}
     bestStreak={bestStreak}
     streakMilestone={streakMilestone}
+    onClearStreakMilestone={() => setStreakMilestone(null)}
   />
 
   <div className="pokemon-cards">

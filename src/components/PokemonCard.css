@@ -105,12 +105,12 @@
 
 @keyframes cardPopIn {
     0% {
-        transform: scale(0.7) rotate(-6deg);
+        transform: translateY(12px) rotate(-6deg) scale(0.98);
         opacity: 0;
     }
 
     70% {
-        transform: scale(1.1) rotate(2deg);
+        transform: translateY(-6px) rotate(2deg) scale(1);
         opacity: 1;
     }
 
@@ -126,19 +126,19 @@
 
 @keyframes cardBounce {
     0% {
-        transform: scale(1);
+        transform: translateY(0);
     }
 
     30% {
-        transform: scale(1.15);
+        transform: translateY(-12px);
     }
 
     60% {
-        transform: scale(0.95);
+        transform: translateY(6px);
     }
 
     100% {
-        transform: scale(1);
+        transform: translateY(0);
     }
 }
 
