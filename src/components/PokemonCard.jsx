@@ -56,8 +56,6 @@ function PokemonCard({
       <img 
         src={pokemon.sprite || '/placeholder-pokemon.png'}
         alt={position === 'left' ? "" : pokemon.name}
-        width="200"
-        height="200"
         loading={position === 'left' ? "eager" : "lazy"}
         className="pokemon-image"
         role={position === 'left' ? "presentation" : undefined}
