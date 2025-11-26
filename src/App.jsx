@@ -477,7 +477,7 @@ useEffect(()=> {
      
   }
 
-  , );
+  , []);
 
 if (loading) {
   return (<div className="loading"> {
