@@ -1,50 +1,73 @@
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
-function GameControls({ 
-  onGuess, 
-  onToggleDarkMode, 
-  showResult, 
-  isMobile, 
-  darkMode, 
-  rightPokemon, 
-  leftPokemon, 
-  currentStat 
+function GameControls({
+  onGuess,
+  onToggleDarkMode,
+  showResult,
+  isMobile,
+  darkMode,
+  rightPokemon,
+  leftPokemon,
+  currentStat,
 }) {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Game Action Buttons */}
-      <div className="buttons">
-        <button 
+      <div className='buttons'>
+        <button
           onClick={() => onGuess('higher')}
           className={`guess-button higher ${isMobile ? 'mobile-button' : ''}`}
           disabled={showResult}
-          aria-label={`Guess that ${rightPokemon.name}'s ${currentStat.label.toLowerCase()} is higher than ${leftPokemon[currentStat.key]}`}
-          aria-describedby="current-stat-label"
+          aria-label={t('ariaGuessHigher', {
+            name: rightPokemon.name,
+            stat: currentStat.label.toLowerCase(),
+            value: leftPokemon[currentStat.key],
+          })}
+          aria-describedby='current-stat-label'
         >
-          <span className="button-icon" aria-hidden="true">↑</span>
-          HIGHER
-          {isMobile && <span className="mobile-hint" aria-hidden="true">(Swipe ↑)</span>}
+          <span className='button-icon' aria-hidden='true'>
+            ↑
+          </span>
+          {t('higher')}
+          {isMobile && (
+            <span className='mobile-hint' aria-hidden='true'>
+              {t('mobileSwipeUp')}
+            </span>
+          )}
         </button>
-        
-        <button 
+
+        <button
           onClick={() => onGuess('lower')}
           className={`guess-button lower ${isMobile ? 'mobile-button' : ''}`}
           disabled={showResult}
-          aria-label={`Guess that ${rightPokemon.name}'s ${currentStat.label.toLowerCase()} is lower than ${leftPokemon[currentStat.key]}`}
-          aria-describedby="current-stat-label"
+          aria-label={t('ariaGuessLower', {
+            name: rightPokemon.name,
+            stat: currentStat.label.toLowerCase(),
+            value: leftPokemon[currentStat.key],
+          })}
+          aria-describedby='current-stat-label'
         >
-          <span className="button-icon" aria-hidden="true">↓</span>
-          LOWER
-          {isMobile && <span className="mobile-hint" aria-hidden="true">(Swipe ↓)</span>}
+          <span className='button-icon' aria-hidden='true'>
+            ↓
+          </span>
+          {t('lower')}
+          {isMobile && (
+            <span className='mobile-hint' aria-hidden='true'>
+              {t('mobileSwipeDown')}
+            </span>
+          )}
         </button>
       </div>
 
       {/* Dark Mode Toggle */}
-      <button 
+      <button
         onClick={onToggleDarkMode}
-        className="dark-mode-toggle"
-        aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`}
-        title={`Switch to ${darkMode ? 'light' : 'dark'} mode`}
+        className='dark-mode-toggle'
+        aria-label={darkMode ? t('switchToLightMode') : t('switchToDarkMode')}
+        title={darkMode ? t('switchToLightMode') : t('switchToDarkMode')}
       >
         {darkMode ? '☀️' : '🌙'}
       </button>

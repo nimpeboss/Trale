@@ -1,0 +1,20 @@
+.language-selector {
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.language-selector select {
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.92);
+    font-weight: 600;
+    cursor: pointer;
+    color: #222;
+}
+
+.dark-mode .language-selector select {
+    background: rgba(255, 255, 255, 0.06);
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}

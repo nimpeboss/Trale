@@ -1,32 +1,67 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-function ScoreDisplay({ score, highScore, streak, bestStreak, streakMilestone, onClearStreakMilestone }) {
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from './LanguageSelector';
+
+function ScoreDisplay({
+  score,
+  highScore,
+  streak,
+  bestStreak,
+  streakMilestone,
+  onClearStreakMilestone,
+}) {
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (streakMilestone && onClearStreakMilestone) {
-      const timeout = setTimeout(() => {
-        onClearStreakMilestone();
-      }, 2000); // Hide after 2 seconds
+      const timeout = setTimeout(
+        () => {
+          onClearStreakMilestone();
+        },
+
+        2000
+      ); // Hide after 2 seconds
       return () => clearTimeout(timeout);
     }
   }, [streakMilestone, onClearStreakMilestone]);
 
   return (
     <>
-      <div className="score-container slide-down">
-        <div className="score">Score: {score}</div>
-        <div className="high-score">High Score: {highScore}</div>
-        <div className="streak">
-          🔥 Streak: {streak}
+      {' '}
+      <div className='score-container slide-down'>
+        {' '}
+        <div className='score'>
+          {' '}
+          {t('score')}: {score}
+        </div>{' '}
+        <div className='high-score'>
+          {' '}
+          {t('highScore')}: {highScore}
+        </div>{' '}
+        <div className='language-switch'>
+          {' '}
+          <LanguageSelector />{' '}
+        </div>{' '}
+        <div className='streak'>
+          {' '}
+          🔥 {t('streak')}: {streak}
           {bestStreak > 0 && (
-            <span className="best-streak"> (Best: {bestStreak})</span>
+            <span className='best-streak'>
+              {' '}
+              ( {t('best')}: {bestStreak})
+            </span>
           )}
-        </div>
-      </div>
-      
+        </div>{' '}
+      </div>{' '}
       {streakMilestone && (
-        <div className="streak-milestone pop-in">
-          🔥 {streakMilestone} Streak Milestone! 🔥
+        <div className='streak-milestone pop-in'>
+          {' '}
+          🔥 {t('streak')}
+          {streakMilestone}
+          {t('streakMilestone')}
+          🔥{' '}
         </div>
       )}
     </>

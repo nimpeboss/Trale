@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import AnimatedNumber from './AnimatedNumber';
+import { useTranslation } from 'react-i18next';
 import TypeBadges from './TypeBadges';
 
 function PokemonCard({
@@ -17,7 +18,7 @@ function PokemonCard({
     if (animateCards) {
       classes.push(position === 'left' ? 'slide-in-left' : 'slide-in-right');
     }
-
+    // Modal/info button removed; details are no longer shown in a dialog
     if (showResult) {
       if (position === 'left' && isCorrect === false) {
         classes.push('shake');
@@ -33,6 +34,7 @@ function PokemonCard({
 
     return classes.join(' ');
   };
+  const { t } = useTranslation();
 
   const handleImageError = e => {
     console.log(`${position} Pokemon image failed to load:`, pokemon.sprite);
@@ -71,13 +73,14 @@ function PokemonCard({
           rel='noopener noreferrer'
           onClick={e => e.stopPropagation()}
           onKeyDown={e => e.stopPropagation()}
-          aria-label={`Open ${pokemon.name} page on Bulbapedia`}
+          aria-label={t('openBulbapedia', { name: pokemon.name })}
         >
           {pokemon.name}
           <span className='external-link-icon' aria-hidden='true'>
             ↗
           </span>
         </a>
+        {/* Details button removed — modal was removed */}
       </h2>
 
       <TypeBadges types={pokemon.types} showAriaLabel={position === 'left'} />
@@ -98,7 +101,7 @@ function PokemonCard({
                 <AnimatedNumber value={pokemon[currentStat.key]} />
               </p>
             ) : (
-              <p className='stat-value hidden pulse-slow'>???</p>
+              <p className='stat-value hidden pulse-slow'>{t('hiddenStat')}</p>
             )}
           </>
         )}
@@ -122,6 +125,7 @@ PokemonCard.propTypes = {
   showResult: PropTypes.bool,
   isCorrect: PropTypes.bool,
   className: PropTypes.string,
+  // onRequestDetails removed with modal
 };
 
 export default PokemonCard;

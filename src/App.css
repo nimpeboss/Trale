@@ -32,6 +32,41 @@ body {
   gap: 50px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+  position: relative;
+  padding-top: 10px;
+  /* create room for absolute-positioned language selector */
+}
+
+/* Language selector inside score display */
+.score-container .language-switch {
+  position: absolute;
+  left: 8px;
+  /* Move language switch to top-left of the score area */
+  top: 8px;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .score-container .language-switch {
+    position: relative;
+    left: 0;
+    top: 0;
+    margin-left: auto;
+    margin-right: 8px;
+  }
+}
+
+/* Ensure dark mode toggle doesn't overlap language selector by adding spacing */
+.dark-mode-toggle {
+  margin-left: 12px;
+  z-index: 5;
+}
+
+@media (max-width: 768px) {
+  .dark-mode-toggle {
+    margin-left: 0;
+    margin-top: 8px;
+  }
 }
 
 .score {
@@ -217,14 +252,22 @@ body {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.5s ease-out;
-}
 
-/* Pokémon Type Colors */
-.type-normal {
-  background: linear-gradient(135deg, #A8A878 0%, #9C9C7C 100%);
-}
+  /* Use specific selectors and !important to ensure colors display regardless of other overrides */
+  .result-indicator.correct,
+  .vs-section .result-indicator.correct,
+  .pop-in.result-indicator.correct {
+    background: linear-gradient(135deg, #11998e, #38ef7d) !important;
+    color: white !important;
+  }
 
-.type-fire {
+  .result-indicator.incorrect,
+  .vs-section .result-indicator.incorrect,
+  .pop-in.result-indicator.incorrect {
+    background: linear-gradient(135deg, #ee0979, #ff6a00) !important;
+    color: white !important;
+  }
+
   background: linear-gradient(135deg, #F08030 0%, #DD6610 100%);
 }
 
@@ -357,6 +400,17 @@ body {
 }
 
 .result-indicator.incorrect {
+  background: linear-gradient(135deg, #ee0979, #ff6a00);
+  color: white;
+}
+
+/* More specific selectors to ensure colors apply even when nested or shaded */
+.vs-section .result-indicator.correct {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  color: white;
+}
+
+.vs-section .result-indicator.incorrect {
   background: linear-gradient(135deg, #ee0979, #ff6a00);
   color: white;
 }
