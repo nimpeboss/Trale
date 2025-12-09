@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import './App.css';
 import PokemonCard from './components/PokemonCard';
-// PokemonModal removed — details modal was removed, so no import
 import GameControls from './components/GameControls';
 import ScoreDisplay from './components/ScoreDisplay';
 
