@@ -437,7 +437,10 @@ function App() {
     setHighScore(0);
     setBestStreak(0);
     // Rick Roll easter egg
-    window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+    window.open(
+      'https://tenor.com/view/mortal-kombat-tsang-tsung-soul-is-mine-gif-5567102',
+      '_blank'
+    );
   };
 
   // Modal handlers removed
